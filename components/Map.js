@@ -2,6 +2,17 @@ import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 
 class GoogleMap extends React.Component {
+    renderChildren() {
+        const {children} = this.props;
+        if (!children) return(null);
+        return React.Children.map(children, c => {
+            return React.cloneElement(c, {
+                map: this.map,
+                google: this.props.google,
+                mapCenter: this.state.currentLocation
+            });
+        })
+    }
     constructor(props) {
         super(props);
 
@@ -80,6 +91,7 @@ class GoogleMap extends React.Component {
                 style={style}
                 ref='map'>
                 Loading map...
+                {this.renderChildren()}
             </div>
         )
     }
