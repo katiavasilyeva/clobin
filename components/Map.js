@@ -11,11 +11,42 @@ class GoogleMap extends React.Component {
                 lat: lat,
                 lng: lng
             }
+        };
+    }
+    componentDidMount(){
+        if (this.props.centerAroundCurrentLocation) {
+            if (navigator && navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    const coords = pos.coords;
+                    this.setState({
+                        currentLocation: {
+                            lat: coords.latitude,
+                            lng: coords.longitude
+                        }
+                    })
+                })
+            }
+
         }
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.google !== this.props.google) {
             this.loadMap();
+        }
+        if (prevState.currentLocation !== this.state.currentLocation) {
+            this.recenterMap();
+        }
+    }
+    recenterMap() {
+        const map = this.map;
+        const curr = this.state.currentLocation;
+
+        const google = this.props.google;
+        const maps = google.maps;
+
+        if (map) {
+            let center = new maps.LatLng(curr.lat, curr.lng);
+            map.panTo(center)
         }
     }
 
@@ -56,13 +87,15 @@ class GoogleMap extends React.Component {
 GoogleMap.propTypes = {
     google: React.PropTypes.object,
     zoom: React.PropTypes.number,
-    initialCenter: React.PropTypes.object
+    initialCenter: React.PropTypes.object,
+    centerAroundCurrentLocation: React.PropTypes.bool
 };
 GoogleMap.defaultProps = {
     zoom: 13,
     initialCenter: {
         lat: 37.774929,
         lng: -122.419416
-    }
+    },
+    centerAroundCurrentLocation: true
 };
 export default GoogleMap
