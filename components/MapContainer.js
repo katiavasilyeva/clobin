@@ -2,6 +2,7 @@ import React from 'react';
 import GoogleMap from './Map'
 import {GoogleApiWrapper} from 'google-maps-react'
 import Marker from './Marker'
+import Boxes from './Boxes'
 
 export class MapContainer extends React.Component {
     constructor(){
@@ -31,6 +32,7 @@ export class MapContainer extends React.Component {
                            onSearchedAddress={this.onSearchedAddress}>
                     <Marker />
                     <Marker position={this.state.currentLocation} />
+                    <Boxes/>
                 </GoogleMap>
             </div>
         )
