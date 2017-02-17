@@ -51,13 +51,14 @@ class SearchBar extends Component{
 }
     render(){
         return(
-            <div>
+            <div >
                 <form 
                     onSubmit={this.onSubmit}>
                     <input 
                         ref='autocomplete'
                         type="text"
-                        placeholder="Enter a location" />
+                        placeholder="Enter a location"
+                    />
                     
                 </form>
 

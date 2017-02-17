@@ -59,9 +59,10 @@ export class MapContainer extends React.Component {
         )
     }
     onSearchedAddress(position){
+        const zoom =19;
         this.setState({
             currentLocation:position,
-            zoom:19,
+            zoom:zoom,
             updatePositionMarker:true
         });
     }
@@ -70,10 +71,11 @@ export class MapContainer extends React.Component {
             content: box.content,
             position: box.position,
         };
+        const zoom=19;
         const boxLength = boxClicked.length;
         this.setState({
             selectedBox: boxClicked,
-            zoom:18,
+            zoom:zoom,
             currentLocation:boxClicked.position,
             updatePositionMarker:false,
             hideInfoPanel:false,
