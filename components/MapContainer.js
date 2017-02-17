@@ -6,7 +6,7 @@ import Marker from './Marker'
 export class MapContainer extends React.Component {
     constructor(){
         super();
-        this.state = {currentLocation:{lat: 37.759703, lng: -122.428093}};
+        this.state = {currentLocation:{lat: 37.759703, lng: -122.428093}, zoom:17};
         this.onSearchedAddress = this.onSearchedAddress.bind(this);
     }
     componentDidMount() {
@@ -26,6 +26,7 @@ export class MapContainer extends React.Component {
         return (
             <div>
                 <GoogleMap google={this.props.google}
+                           zoom = {this.state.zoom}
                            currentLocation={ this.state.currentLocation }
                            onSearchedAddress={this.onSearchedAddress}>
                     <Marker />
@@ -35,7 +36,8 @@ export class MapContainer extends React.Component {
         )
     }
     onSearchedAddress(position){
-        this.setState({currentLocation:position});
+        this.setState({currentLocation:position, zoom:19});
+
     }
 }
 export default GoogleApiWrapper({
