@@ -10,7 +10,8 @@ class GoogleMap extends React.Component {
             return React.cloneElement(c, {
                 map: this.map,
                 google: this.props.google,
-                mapCenter: this.props.currentLocation
+                position: this.props.currentLocation,
+                update: this.props.updatePositionMarker,
             });
         })
     }
@@ -26,7 +27,7 @@ class GoogleMap extends React.Component {
     // re-centers map to current location
     recenterMap() {
         const map = this.map;
-        const curr = this.props.currentLocation;
+        let curr =  this.props.currentLocation;
 
         const google = this.props.google;
         const maps = google.maps;

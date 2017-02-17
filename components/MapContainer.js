@@ -12,9 +12,9 @@ export class MapContainer extends React.Component {
                 lat: 37.759703,
                 lng: -122.428093
             },
-            zoom:16,
+            zoom:15,
             selectedBox:{},
-            selectedBoxLength:0,
+            updatePositionMarker:true
         };
         this.onSearchedAddress = this.onSearchedAddress.bind(this);
         this.onBoxSelect = this.onBoxSelect.bind(this);
@@ -38,9 +38,10 @@ export class MapContainer extends React.Component {
                 <GoogleMap google={this.props.google}
                            zoom = {this.state.zoom}
                            currentLocation={ this.state.currentLocation }
-                           onSearchedAddress={this.onSearchedAddress}>
+                           onSearchedAddress={this.onSearchedAddress}
+                           updatePositionMarker = {this.state.updatePositionMarker}
+                >
                     <Marker />
-                    <Marker position={this.state.currentLocation} />
                     <Boxes
                         onBoxSelect = {(box)=>this.onBoxSelect(box)}
                     />
@@ -49,19 +50,23 @@ export class MapContainer extends React.Component {
         )
     }
     onSearchedAddress(position){
-        this.setState({currentLocation:position, zoom:19});
-
+        this.setState({
+            currentLocation:position,
+            zoom:19,
+            updatePositionMarker:true
+        });
     }
-
     onBoxSelect(box) {
         const boxClicked = {
             content: box.content,
             position: box.position,
         };
-        const zoom = 18;
-        this.setState({selectedBox: boxClicked,
-            currentLocation:box.position,
-            zoom:zoom});
+        this.setState({
+            selectedBox: boxClicked,
+            zoom:18,
+            currentLocation:boxClicked.position,
+            updatePositionMarker:false
+        });
     }
 }
 export default GoogleApiWrapper({
