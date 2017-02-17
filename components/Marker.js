@@ -21,7 +21,9 @@ class Marker extends Component{
 
         const pref = {
             map: map,
-            position: position
+            position: position,
+            cursor:'grab'
+
         };
         this.marker = new google.maps.Marker(pref);
     }

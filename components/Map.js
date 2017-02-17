@@ -274,7 +274,6 @@ class GoogleMap extends React.Component {
         const style = {
             width: '100%',
             height: '100vh',
-            position: 'relative'
         };
         return (
         <div>

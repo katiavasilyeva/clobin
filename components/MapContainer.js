@@ -7,8 +7,17 @@ import Boxes from './Boxes'
 export class MapContainer extends React.Component {
     constructor(){
         super();
-        this.state = {currentLocation:{lat: 37.759703, lng: -122.428093}, zoom:17};
+        this.state = {
+            currentLocation:{
+                lat: 37.759703,
+                lng: -122.428093
+            },
+            zoom:16,
+            selectedBox:{},
+            selectedBoxLength:0,
+        };
         this.onSearchedAddress = this.onSearchedAddress.bind(this);
+        this.onBoxSelect = this.onBoxSelect.bind(this);
     }
     componentDidMount() {
         if (navigator && navigator.geolocation) {
@@ -32,7 +41,9 @@ export class MapContainer extends React.Component {
                            onSearchedAddress={this.onSearchedAddress}>
                     <Marker />
                     <Marker position={this.state.currentLocation} />
-                    <Boxes/>
+                    <Boxes
+                        onBoxSelect = {(box)=>this.onBoxSelect(box)}
+                    />
                 </GoogleMap>
             </div>
         )
@@ -40,6 +51,17 @@ export class MapContainer extends React.Component {
     onSearchedAddress(position){
         this.setState({currentLocation:position, zoom:19});
 
+    }
+
+    onBoxSelect(box) {
+        const boxClicked = {
+            content: box.content,
+            position: box.position,
+        };
+        const zoom = 18;
+        this.setState({selectedBox: boxClicked,
+            currentLocation:box.position,
+            zoom:zoom});
     }
 }
 export default GoogleApiWrapper({

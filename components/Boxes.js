@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
 import firebase from 'firebase';
+const evtNames = [ 'click','mouseover', 'dragend'];
+
 class Boxes extends Component{
     constructor(){
         super();
-        this.state={boxes:[]}
-    }
-
+        this.state={
+            boxes:[],
+        }
+    };
     componentDidMount(){
         const firebaseRef = firebase.database().ref('boxes');
         const boxes = [];
@@ -26,11 +29,23 @@ class Boxes extends Component{
             }
         })
     }
+
+    camelize(word) {
+        const str = JSON.stringify(word);
+        let eventName = '';
+        for (let char of str) {
+            if (char !== '"') {
+                eventName = eventName + char
+            }
+        }
+        const event = eventName.charAt(0).toUpperCase() + eventName.slice(1);
+        return event;
+    }
     renderMarker() {
         let {
             map, google
         } = this.props;
-        const boxMarkers = this.state.boxes.map((box) => {
+        const boxMarkers = this.state.boxes.map((box,i) => {
             const newMarker = {
                 content: box.content,
                 pos: box.position,
@@ -45,11 +60,29 @@ class Boxes extends Component{
                 clickable: true
             };
             this.marker = new google.maps.Marker(pref);
+            evtNames.map(e => {
+                this.marker.addListener(e, this.handleEvent(e,i));
+            });
         });
+    }
+    handleEvent(evt,i) {
+        return () => {
+            const evtName = `on${this.camelize(evt)}`;
+            if (this.props[evtName]) {
+                this.props[evtName](this.state.boxes[i]);
+                const boxClicked = this.state.boxes[i];
+                this.props.onBoxSelect(boxClicked);
+            }
+        }
     }
     render(){
         return null;
     }
 }
-
+Boxes.propTypes = {
+    onClick: React.PropTypes.func
+};
+Boxes.defaultProps = {
+    onClick () {}
+};
 export default Boxes
