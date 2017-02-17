@@ -1,7 +1,8 @@
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
-
+import SearchBar from './SearchBar'
 class GoogleMap extends React.Component {
+    //passes down state to all of the children
     renderChildren() {
         const {children} = this.props;
         if (!children) return(null);
@@ -9,48 +10,23 @@ class GoogleMap extends React.Component {
             return React.cloneElement(c, {
                 map: this.map,
                 google: this.props.google,
-                mapCenter: this.state.currentLocation
+                mapCenter: this.props.currentLocation
             });
         })
     }
-    constructor(props) {
-        super(props);
-
-        const {lat, lng} = this.props.initialCenter;
-        this.state = {
-            currentLocation: {
-                lat: lat,
-                lng: lng
-            }
-        };
-    }
-    componentDidMount(){
-        if (this.props.centerAroundCurrentLocation) {
-            if (navigator && navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    const coords = pos.coords;
-                    this.setState({
-                        currentLocation: {
-                            lat: coords.latitude,
-                            lng: coords.longitude
-                        }
-                    })
-                })
-            }
-
-        }
-    }
-    componentDidUpdate(prevProps, prevState) {
+    // tell the map when to update
+    componentDidUpdate(prevProps) {
         if (prevProps.google !== this.props.google) {
             this.loadMap();
         }
-        if (prevState.currentLocation !== this.state.currentLocation) {
+        if (prevProps.currentLocation !== this.props.currentLocation) {
             this.recenterMap();
         }
     }
+    // re-centers map to current location
     recenterMap() {
         const map = this.map;
-        const curr = this.state.currentLocation;
+        const curr = this.props.currentLocation;
 
         const google = this.props.google;
         const maps = google.maps;
@@ -60,7 +36,7 @@ class GoogleMap extends React.Component {
             map.panTo(center)
         }
     }
-
+    // loads the map
     loadMap() {
         if (this.props && this.props.google) {
             // google is available
@@ -71,7 +47,7 @@ class GoogleMap extends React.Component {
             const node = ReactDOM.findDOMNode(mapRef);
 
             let {zoom} = this.props;
-            const {lat, lng} = this.state.currentLocation;
+            const {lat, lng} = this.props.currentLocation;
             const center = new maps.LatLng(lat, lng);
             const mapConfig = Object.assign({}, {
                 center: center,
@@ -81,33 +57,36 @@ class GoogleMap extends React.Component {
         }
     }
 
+    // renders the component
     render() {
         const style = {
-            width: '100vw',
-            height: '100vh'
+            width: '100%',
+            height: '100vh',
+            position: 'relative'
         };
         return (
+        <div>
+            <SearchBar
+                google = {this.props.google}
+                map = {this.map}
+                onSearchedAddress={this.props.onSearchedAddress }
+            />
             <div
                 style={style}
                 ref='map'>
                 Loading map...
                 {this.renderChildren()}
             </div>
+        </div>
         )
     }
+
 }
 GoogleMap.propTypes = {
     google: React.PropTypes.object,
-    zoom: React.PropTypes.number,
-    initialCenter: React.PropTypes.object,
-    centerAroundCurrentLocation: React.PropTypes.bool
+    zoom: React.PropTypes.number
 };
 GoogleMap.defaultProps = {
-    zoom: 13,
-    initialCenter: {
-        lat: 37.774929,
-        lng: -122.419416
-    },
-    centerAroundCurrentLocation: true
+    zoom: 13
 };
 export default GoogleMap

@@ -1,7 +1,11 @@
 import React, {Component,PropTypes} from 'react';
 
 class Marker extends Component{
+
     componentDidUpdate(prevProps) {
+        if (this.marker) {
+            this.marker.setMap(null);
+        }
         if ((this.props.map !== prevProps.map) ||
             (this.props.position !== prevProps.position)) {
             this.renderMarker();

@@ -4,18 +4,38 @@ import {GoogleApiWrapper} from 'google-maps-react'
 import Marker from './Marker'
 
 export class MapContainer extends React.Component {
-
+    constructor(){
+        super();
+        this.state = {currentLocation:{lat: 37.759703, lng: -122.428093}};
+        this.onSearchedAddress = this.onSearchedAddress.bind(this);
+    }
+    componentDidMount() {
+        if (navigator && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const coords = position.coords;
+                this.setState({
+                    currentLocation: {
+                        lat: coords.latitude,
+                        lng: coords.longitude
+                    }
+                })
+            })
+        }
+    }
     render() {
-        const pos = {lat: 37.759703, lng: -122.428093};
-
         return (
             <div>
-                <GoogleMap google={this.props.google}>
+                <GoogleMap google={this.props.google}
+                           currentLocation={ this.state.currentLocation }
+                           onSearchedAddress={this.onSearchedAddress}>
                     <Marker />
-                    <Marker position={pos} />
+                    <Marker position={this.state.currentLocation} />
                 </GoogleMap>
             </div>
         )
+    }
+    onSearchedAddress(position){
+        this.setState({currentLocation:position});
     }
 }
 export default GoogleApiWrapper({
