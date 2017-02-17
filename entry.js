@@ -9,5 +9,6 @@ const config = {
     storageBucket: "clobin-91825.appspot.com",
     messagingSenderId: "288918706586"
 };
+require("file-loader?name=[name].[ext]!./index.html");
 firebase.initializeApp(config);
 ReactDOM.render(<App/>, document.getElementById("placeholder"));
