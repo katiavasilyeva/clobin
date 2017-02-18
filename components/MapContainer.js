@@ -5,8 +5,8 @@ import Marker from './Marker'
 import Boxes from './Boxes'
 import InfoPanel from './InfoPanel'
 import NewLocationMarker from './NewLocationMarker'
-import SubmitNewLocation from './SubmitNewLocation'
-
+import ConfirmNewLocation from './ConfirmNewLocation'
+let count = 0;
 export class MapContainer extends React.Component {
     constructor(){
         super();
@@ -22,6 +22,7 @@ export class MapContainer extends React.Component {
             updatePositionMarker:true,
             addNewLocation:false,
             newBoxLocation:{},
+            confirmNewLocation:false,
             userAddedBoxes:[]
         };
         this.onSearchedAddress = this.onSearchedAddress.bind(this);
@@ -29,6 +30,7 @@ export class MapContainer extends React.Component {
         this.onInfoPanelClose = this.onInfoPanelClose.bind(this);
         this.onAddNewLocation = this.onAddNewLocation.bind(this);
         this.getNewBoxLocation = this.getNewBoxLocation.bind(this);
+        this.onConfirmNewLocation = this.onConfirmNewLocation.bind(this);
     }
     componentDidMount() {
         if (navigator && navigator.geolocation) {
@@ -53,7 +55,8 @@ export class MapContainer extends React.Component {
                            updatePositionMarker = {this.state.updatePositionMarker}
                            addNewLocation = {this.state.addNewLocation}
                            getNewBoxLocation = {(newLocation)=>this.getNewBoxLocation(newLocation)}
-                           newBoxLocation = {this.state.newBoxLocation}>
+                           newBoxLocation = {this.state.newBoxLocation}
+                           confirmedNewLocation = {this.state.confirmNewLocation}>
                     <Marker />
                     <NewLocationMarker/>
                     <Boxes
@@ -61,11 +64,13 @@ export class MapContainer extends React.Component {
                 </GoogleMap>
                 <button
                     style={{background:'yellow'}}
-                    onClick={this.onAddNewLocation}>
+                    onClick={()=>this.onAddNewLocation()}>
                     Add Missing Location
                 </button>
-                <SubmitNewLocation
-                    showComponent = {this.state.addNewLocation}/>
+                <ConfirmNewLocation
+                    addNewLocation = {this.state.addNewLocation}
+                    onConfirmNewLocation = {()=>this.onConfirmNewLocation()}
+                />
                 <InfoPanel
                     hideInfoPanel = {this.state.hideInfoPanel}
                     selectedBox = {this.state.selectedBox}
@@ -76,7 +81,7 @@ export class MapContainer extends React.Component {
         )
     }
     onSearchedAddress(position){
-        const zoom =19;
+        const zoom =17;
         this.setState({
             currentLocation:position,
             zoom:zoom,
@@ -88,7 +93,7 @@ export class MapContainer extends React.Component {
             content: box.content,
             position: box.position,
         };
-        const zoom=19;
+        const zoom=17;
         const boxLength = boxClicked.length;
         this.setState({
             selectedBox: boxClicked,
@@ -103,10 +108,19 @@ export class MapContainer extends React.Component {
         this.setState({hideInfoPanel:true})
     }
     onAddNewLocation(){
-        this.setState({addNewLocation:true,updatePositionMarker:false,hideInfoPanel:true});
+        if(count ===0 || (count%2) ===0){
+            count += 1;
+            this.setState({addNewLocation:true,updatePositionMarker:false,hideInfoPanel:true});
+        }else if ((count%2)!==0){
+            count += 1;
+            this.setState({addNewLocation:false,updatePositionMarker:false,hideInfoPanel:false});
+        }
     }
     getNewBoxLocation(newLocation){
-        this.setState({newBoxLocation:newLocation,updatePositionMarker:false,});
+        this.setState({newBoxLocation:newLocation,updatePositionMarker:false});
+    }
+    onConfirmNewLocation(){
+        this.setState({updatePositionMarker:false,confirmNewLocation:true});
     }
 }
 export default GoogleApiWrapper({

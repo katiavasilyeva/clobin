@@ -1,7 +1,6 @@
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import SearchBar from './SearchBar'
-
 const evtNames = ['dblclick'];
 
 class GoogleMap extends React.Component {
@@ -13,10 +12,12 @@ class GoogleMap extends React.Component {
             return React.cloneElement(c, {
                 map: this.map,
                 google: this.props.google,
+                zoom:this.props.zoom,
                 position: this.props.currentLocation,
                 update: this.props.updatePositionMarker,
                 newBinLocation:this.props.newBoxLocation,
-                addNew: this.props.addNewLocation
+                addNew: this.props.addNewLocation,
+                confirmed: this.props.confirmedNewLocation
             });
         })
     }
@@ -25,7 +26,7 @@ class GoogleMap extends React.Component {
         if (prevProps.google !== this.props.google) {
             this.loadMap();
         }
-        if (prevProps.currentLocation !== this.props.currentLocation) {
+        if (prevProps.currentLocation !== this.props.currentLocation  || prevProps.zoom !== this.props.zoom) {
             this.recenterMap();
         }
     }
@@ -36,10 +37,12 @@ class GoogleMap extends React.Component {
 
         const google = this.props.google;
         const maps = google.maps;
+        const zoom = this.props.zoom;
 
         if (map) {
             let center = new maps.LatLng(curr.lat, curr.lng);
-            map.panTo(center)
+            map.panTo(center);
+            map.setZoom(zoom)
         }
     }
     // loads the map

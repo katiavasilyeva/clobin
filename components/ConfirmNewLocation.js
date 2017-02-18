@@ -1,18 +1,19 @@
 import React,{Component} from 'react';
 
-class SubmitNewLocation extends Component{
+class ConfirmNewLocation extends Component{
     render(){
-        if(this.props.showComponent){
+        if(this.props.addNewLocation){
             return(
                 <button style ={{background:'#71C3B3'}}
-                >
+                onClick={()=>this.props.onConfirmNewLocation()}>
                     Confirm Box Location
                 </button>
                 )
-        }else{
+        }
+        else{
             return null;
         }
     }
 }
 
-export default SubmitNewLocation
+export default ConfirmNewLocation

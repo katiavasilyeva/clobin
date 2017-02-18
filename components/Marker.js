@@ -7,7 +7,8 @@ class Marker extends Component {
             this.marker.setMap(null);
         }
         if ((this.props.map !== prevProps.map) ||
-            (this.props.position !== prevProps.position) && this.props.update) {
+            (this.props.position !== prevProps.position)
+            && this.props.update) {
             this.renderMarker(this.props.position);
             count = 0
         }
