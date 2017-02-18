@@ -20,7 +20,6 @@ class Marker extends Component {
             this.renderMarker(position);
         }
     }
-
     renderMarker(location) {
         let {
             map, google
@@ -28,7 +27,6 @@ class Marker extends Component {
 
         let pos = location;
         const position = new google.maps.LatLng(pos.lat, pos.lng);
-
         const pref = {
             map: map,
             position: position,

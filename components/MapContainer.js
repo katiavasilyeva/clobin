@@ -4,6 +4,7 @@ import {GoogleApiWrapper} from 'google-maps-react'
 import Marker from './Marker'
 import Boxes from './Boxes'
 import InfoPanel from './InfoPanel'
+import NewLocationMarker from './NewLocationMarker'
 
 export class MapContainer extends React.Component {
     constructor(){
@@ -17,11 +18,15 @@ export class MapContainer extends React.Component {
             selectedBox:{},
             selectedBoxLength:0,
             hideInfoPanel:true,
-            updatePositionMarker:true
+            updatePositionMarker:true,
+            addNewLocation:false,
+            newBoxLocation:{}
         };
         this.onSearchedAddress = this.onSearchedAddress.bind(this);
         this.onBoxSelect = this.onBoxSelect.bind(this);
         this.onInfoPanelClose = this.onInfoPanelClose.bind(this);
+        this.onAddNewLocation = this.onAddNewLocation.bind(this);
+        this.getNewBoxLocation = this.getNewBoxLocation.bind(this);
     }
     componentDidMount() {
         if (navigator && navigator.geolocation) {
@@ -43,12 +48,22 @@ export class MapContainer extends React.Component {
                            zoom = {this.state.zoom}
                            currentLocation={ this.state.currentLocation }
                            onSearchedAddress={this.onSearchedAddress}
-                           updatePositionMarker = {this.state.updatePositionMarker}>
+                           updatePositionMarker = {this.state.updatePositionMarker}
+                           addNewLocation = {this.state.addNewLocation}
+                           getNewBoxLocation = {(newLocation)=>this.getNewBoxLocation(newLocation)}
+                           newBoxLocation = {this.state.newBoxLocation}>
                     <Marker />
-                    <Boxes
-                        onBoxSelect = {(box)=>this.onBoxSelect(box)}
+                    <NewLocationMarker
+
                     />
+                    <Boxes
+                        onBoxSelect = {(box)=>this.onBoxSelect(box)}/>
                 </GoogleMap>
+                <button
+                    style={{background:'yellow'}}
+                    onClick={this.onAddNewLocation}>
+                    Add Missing Location
+                </button>
                 <InfoPanel
                     hideInfoPanel = {this.state.hideInfoPanel}
                     selectedBox = {this.state.selectedBox}
@@ -84,6 +99,12 @@ export class MapContainer extends React.Component {
     }
     onInfoPanelClose(){
         this.setState({hideInfoPanel:true})
+    }
+    onAddNewLocation(){
+        this.setState({addNewLocation:true,updatePositionMarker:false,});
+    }
+    getNewBoxLocation(newLocation){
+        this.setState({newBoxLocation:newLocation,updatePositionMarker:false,});
     }
 }
 export default GoogleApiWrapper({

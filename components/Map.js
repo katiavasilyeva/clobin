@@ -1,6 +1,9 @@
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import SearchBar from './SearchBar'
+
+const evtNames = ['dblclick'];
+
 class GoogleMap extends React.Component {
     //passes down state to all of the children
     renderChildren() {
@@ -12,6 +15,8 @@ class GoogleMap extends React.Component {
                 google: this.props.google,
                 position: this.props.currentLocation,
                 update: this.props.updatePositionMarker,
+                newBinLocation:this.props.newBoxLocation,
+                addNew: this.props.addNewLocation
             });
         })
     }
@@ -38,6 +43,17 @@ class GoogleMap extends React.Component {
         }
     }
     // loads the map
+    camelize(word) {
+        const str = JSON.stringify(word);
+        let eventName = '';
+        for (let char of str) {
+            if (char !== '"') {
+                eventName = eventName + char
+            }
+        }
+        const event = eventName.charAt(0).toUpperCase() + eventName.slice(1);
+        return event;
+    }
     loadMap() {
         if (this.props && this.props.google) {
             // google is available
@@ -264,12 +280,28 @@ class GoogleMap extends React.Component {
                             }
                         ]
                     }
-                ]}
+                ],disableDoubleClickZoom: true}
             });
             this.map = new maps.Map(node, mapConfig);
+            evtNames.forEach(e => {
+                this.map.addListener(e, this.handleEvent(e));
+            });
         }
     }
-
+    handleEvent(evt) {
+        return (e) => {
+            const evtName = `on${this.camelize(evt)}`;
+            if (this.props[evtName]) {
+                this.props[evtName](this.props, this.map, e);
+                if(this.props.addNewLocation){
+                    const newLat = e.latLng.lat();
+                    const newLng = e.latLng.lng();
+                    const newLocation = {lat:newLat,lng:newLng};
+                    this.props.getNewBoxLocation(newLocation);
+                }
+            }
+        }
+    }
     // renders the component
     render() {
         const style = {
@@ -294,5 +326,10 @@ class GoogleMap extends React.Component {
     }
 
 }
-
+GoogleMap.propTypes = {
+    onDblclick: React.PropTypes.func
+};
+GoogleMap.defaultProps = {
+    onDblclick () {}
+};
 export default GoogleMap
