@@ -13,7 +13,6 @@ class SubmitNewLocation extends Component{
             return null;
         }
     }
-
 }
 
 export default SubmitNewLocation
