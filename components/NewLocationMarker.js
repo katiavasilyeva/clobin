@@ -19,10 +19,11 @@ class NewLocationMarker extends Component{
         const pref = {
             map: map,
             position: position,
+            draggable:true,
+            icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
         };
         this.marker = new google.maps.Marker(pref);
     }
-
     render(){
         return null;
     }

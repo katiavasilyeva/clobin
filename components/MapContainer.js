@@ -5,6 +5,7 @@ import Marker from './Marker'
 import Boxes from './Boxes'
 import InfoPanel from './InfoPanel'
 import NewLocationMarker from './NewLocationMarker'
+import SubmitNewLocation from './SubmitNewLocation'
 
 export class MapContainer extends React.Component {
     constructor(){
@@ -20,7 +21,8 @@ export class MapContainer extends React.Component {
             hideInfoPanel:true,
             updatePositionMarker:true,
             addNewLocation:false,
-            newBoxLocation:{}
+            newBoxLocation:{},
+            userAddedBoxes:[]
         };
         this.onSearchedAddress = this.onSearchedAddress.bind(this);
         this.onBoxSelect = this.onBoxSelect.bind(this);
@@ -53,9 +55,7 @@ export class MapContainer extends React.Component {
                            getNewBoxLocation = {(newLocation)=>this.getNewBoxLocation(newLocation)}
                            newBoxLocation = {this.state.newBoxLocation}>
                     <Marker />
-                    <NewLocationMarker
-
-                    />
+                    <NewLocationMarker/>
                     <Boxes
                         onBoxSelect = {(box)=>this.onBoxSelect(box)}/>
                 </GoogleMap>
@@ -64,6 +64,8 @@ export class MapContainer extends React.Component {
                     onClick={this.onAddNewLocation}>
                     Add Missing Location
                 </button>
+                <SubmitNewLocation
+                    showComponent = {this.state.addNewLocation}/>
                 <InfoPanel
                     hideInfoPanel = {this.state.hideInfoPanel}
                     selectedBox = {this.state.selectedBox}
@@ -101,7 +103,7 @@ export class MapContainer extends React.Component {
         this.setState({hideInfoPanel:true})
     }
     onAddNewLocation(){
-        this.setState({addNewLocation:true,updatePositionMarker:false,});
+        this.setState({addNewLocation:true,updatePositionMarker:false,hideInfoPanel:true});
     }
     getNewBoxLocation(newLocation){
         this.setState({newBoxLocation:newLocation,updatePositionMarker:false,});
