@@ -31,6 +31,7 @@ export class MapContainer extends React.Component {
         this.onAddNewLocation = this.onAddNewLocation.bind(this);
         this.getNewBoxLocation = this.getNewBoxLocation.bind(this);
         this.onConfirmNewLocation = this.onConfirmNewLocation.bind(this);
+        this.onCancelAddNewLocation = this.onCancelAddNewLocation.bind(this);
     }
     componentDidMount() {
         if (navigator && navigator.geolocation) {
@@ -76,6 +77,9 @@ export class MapContainer extends React.Component {
                     selectedBox = {this.state.selectedBox}
                     selectedBoxLength = {this.state.selectedBoxLength}
                     onInfoPanelClose = {()=>this.onInfoPanelClose()}
+                    confirmedNewLocation = {this.state.confirmNewLocation}
+                    addNewLocation = {this.state.addNewLocation}
+                    onCancelAddNewLocation = {()=>this.onCancelAddNewLocation()}
                 />
             </div>
         )
@@ -110,9 +114,11 @@ export class MapContainer extends React.Component {
     onAddNewLocation(){
         if(count ===0 || (count%2) ===0){
             count += 1;
+            console.log('even');
             this.setState({addNewLocation:true,updatePositionMarker:false,hideInfoPanel:true});
         }else if ((count%2)!==0){
             count += 1;
+            console.log('odd');
             this.setState({addNewLocation:false,updatePositionMarker:false,hideInfoPanel:false});
         }
     }
@@ -120,7 +126,10 @@ export class MapContainer extends React.Component {
         this.setState({newBoxLocation:newLocation,updatePositionMarker:false});
     }
     onConfirmNewLocation(){
-        this.setState({updatePositionMarker:false,confirmNewLocation:true});
+        this.setState({updatePositionMarker:false,confirmNewLocation:true,hideInfoPanel:false});
+    }
+    onCancelAddNewLocation(){
+        this.setState({hideInfoPanel:true,confirmNewLocation:false,addNewLocation:false})
     }
 }
 export default GoogleApiWrapper({
