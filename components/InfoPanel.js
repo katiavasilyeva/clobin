@@ -16,7 +16,7 @@ class InfoPanel extends Component {
                     </button>
                 </div>)
         }
-        else if (this.props.selectedBoxLength !== 0  && !this.props.confirmedNewLocation){
+        else if (this.props.selectedBoxLength !== 0  && !this.props.confirmedNewLocation && !this.props.hideInfoPanel){
             const address = this.props.selectedBox.content[0];
             const operator = this.props.selectedBox.content[1];
             return (
@@ -28,8 +28,7 @@ class InfoPanel extends Component {
                         Navigate
                     </button>
                     <button
-                        onClick={this.props.onInfoPanelClose}
-                    >
+                        onClick={this.props.onInfoPanelClose}>
                         X
                     </button>
 
