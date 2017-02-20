@@ -1,11 +1,17 @@
 import React, {Component} from 'react';
 const evtNames = [ 'click','mouseover', 'dragend'];
-let locations =[];
+
 class Boxes extends Component{
-    componentDidUpdate(prevProps){
-        if(this.props.map !== prevProps.map){
+    shouldComponentUpdate(prevProps){
+        if(this.props.boxesLength !== prevProps.boxesLength) {
             this.renderMarker();
-        }};
+            return true
+        }
+        else{
+            return false;
+        }
+    };
+
     camelize(word) {
         const str = JSON.stringify(word);
         let eventName = '';
@@ -18,7 +24,6 @@ class Boxes extends Component{
         return event;
     }
     renderMarker() {
-        locations = this.props.boxes;
         let {
             map, google
         } = this.props;
@@ -48,7 +53,7 @@ class Boxes extends Component{
             if (this.props[evtName]) {
                 this.props[evtName](this.props.boxes[i]);
                 const boxClicked = this.props.boxes[i];
-                this.props.onBoxSelect(boxClicked);
+                this.props.onBoxSelect(i);
             }
         }
     }

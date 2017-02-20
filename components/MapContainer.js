@@ -14,10 +14,11 @@ export class MapContainer extends React.Component {
         this.state = {
             currentLocation:{
                 lat: 43.6532,
-                lng: 79.3832
+                lng: -79.3832
             },
             zoom:15,
             boxes:[],
+            boxesLength:0,
             selectedBox:{},
             selectedBoxLength:0,
             hideInfoPanel:true,
@@ -58,8 +59,9 @@ export class MapContainer extends React.Component {
                 icon:'http://maps.google.com/mapfiles/ms/icons/purple-dot.png'
             };
             boxes.push(newLocation);
-            if(boxes.length >= 580){
-                this.setState({boxes: boxes});
+            const boxesLength = boxes.length;
+            if(boxes.length >= 590){
+                this.setState({boxes: boxes,boxesLength:boxesLength});
             }
         })
     }
@@ -69,6 +71,7 @@ export class MapContainer extends React.Component {
                 <GoogleMap google={this.props.google}
                            zoom = {this.state.zoom}
                            boxes = {this.state.boxes}
+                           boxesLength = {this.state.boxesLength}
                            currentLocation={ this.state.currentLocation }
                            onSearchedAddress={this.onSearchedAddress}
                            updatePositionMarker = {this.state.updatePositionMarker}
@@ -80,7 +83,7 @@ export class MapContainer extends React.Component {
                     <Marker />
                     <NewLocationMarker/>
                     <Boxes
-                        onBoxSelect = {(box)=>this.onBoxSelect(box)}/>
+                        onBoxSelect = {(i)=>this.onBoxSelect(i)}/>
                 </GoogleMap>
                 <button
                     style={{background:'yellow'}}
@@ -89,7 +92,7 @@ export class MapContainer extends React.Component {
                 </button>
                 <ConfirmNewLocation
                     addNewLocation = {this.state.addNewLocation}
-                    onConfirmNewLocation = {()=>this.onConfirmNewLocation()}
+                    onConfirmNewLocation = {this.onConfirmNewLocation}
                     newBoxLocationLength = {this.state.newBoxLocationLength}
                     newLocationSubmitted = {this.state.newLocationSubmitted}
                 />
@@ -115,10 +118,10 @@ export class MapContainer extends React.Component {
             updatePositionMarker:true
         });
     }
-    onBoxSelect(box) {
+    onBoxSelect(i) {
         const boxClicked = {
-            content: box.content,
-            position: box.position,
+            content: this.state.boxes[i].content,
+            position: this.state.boxes[i].position,
         };
         const zoom=17;
         const boxLength = boxClicked.length;
@@ -138,11 +141,16 @@ export class MapContainer extends React.Component {
         if(!this.state.submitNewLocationButtonClicked){
             this.setState({addNewLocation:true,
                 updatePositionMarker:false,
+                confirmNewLocation:false,
                 hideInfoPanel:true,
+                newBoxLocationLength:0,
+                newBoxLocation:{},
                 submitNewLocationButtonClicked:true,
-                selectedBoxLength:0
+                selectedBoxLength:0,
+                newLocationSubmitted:false
             });
-        }else {
+        }
+        else {
             this.setState({addNewLocation:false,
                 updatePositionMarker:false,
                 hideInfoPanel:true,
@@ -157,22 +165,33 @@ export class MapContainer extends React.Component {
         this.setState({newBoxLocation:newLocation,
             updatePositionMarker:false,
             newBoxLocationLength:newBoxLocationLength,
-
         });
     }
     onConfirmNewLocation(){
         this.setState({updatePositionMarker:false,confirmNewLocation:true,hideInfoPanel:false});
     }
     onCancelAddNewLocation(){
-        this.setState({hideInfoPanel:true,confirmNewLocation:false,addNewLocation:false});
+        this.setState({hideInfoPanel:true,confirmNewLocation:false,addNewLocation:false, submitNewLocationButtonClicked:false});
     }
     onSubmitNewBoxLocation(){
-        console.log('works');
+        const newLocation={
+            content:['123 adderss ave', 'operator'],
+            icon:'http://maps.google.com/mapfiles/ms/icons/purple-dot.png',
+            position:this.state.newBoxLocation,
+        };
+        const boxes = this.state.boxes;
+        const newBoxesLength = boxes.push(newLocation);
         this.setState({newLocationSubmitted:true,
-            addNewLocation:true,
+            updatePositionMarker:false,
             selectedBoxLength:0,
+            addNewLocation:false,
             hideInfoPanel:false,
-            confirmedNewLocation:true
+            confirmNewLocation:true,
+            newBoxLocationLength:0,
+            newBoxLocation:{},
+            boxes: boxes,
+            boxesLength: newBoxesLength,
+            submitNewLocationButtonClicked:false
         });
     }
 }

@@ -21,7 +21,8 @@ class NewLocationMarker extends Component{
         if (this.marker) {
             this.marker.setMap(null);
         }
-        if (this.marker && !this.props.addNew && this.props.addNew !== nextProps.addNew) {
+        if (this.marker && !this.props.addNew &&
+            this.props.addNew !== nextProps.addNew && this.props.newLocationSubmitted) {
             this.marker.setMap(null);
         }
         if (this.props.confirmed && !this.props.newLocationSubmitted){
@@ -30,8 +31,7 @@ class NewLocationMarker extends Component{
         }
         if (this.props.map !== nextProps.map ||
             this.props.newBinLocation !== prevProps.newBinLocation
-            && this.props.addNew && !this.props.confirmed &&
-            !this.props.newLocationSubmitted
+            && this.props.addNew && !this.props.confirmed && !this.props.newLocationSubmitted
         ) {
             this.renderNewBin(this.props.newBinLocation)
         }

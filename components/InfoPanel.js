@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 
 class InfoPanel extends Component {
     render() {
-        if (this.props.confirmedNewLocation && this.props.addNewLocation && !this.props.hideInfoPanel &&
-        this.props.selectedBoxLength === 0) {
-            if(this.props.newLocationSubmitted && !this.props.hideInfoPanel){
+        if (this.props.confirmedNewLocation && this.props.addNewLocation && !this.props.hideInfoPanel) {
+            if(this.props.newLocationSubmitted){
                 return(
                     <div style ={{background:'grey',height:75, color:'white'}}>
                         Location successfully submitted!
@@ -26,7 +25,7 @@ class InfoPanel extends Component {
                     </button>
                 </div>)}
         }
-        else if (this.props.selectedBoxLength !== 0 && !this.props.hideInfoPanel){
+        else if (this.props.selectedBoxLength !== 0 && !this.props.hideInfoPanel && !this.props.addNewLocation){
             const address = this.props.selectedBox.content[0];
             const operator = this.props.selectedBox.content[1];
             return (

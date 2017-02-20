@@ -15,6 +15,7 @@ class GoogleMap extends React.Component {
                 zoom:this.props.zoom,
                 position: this.props.currentLocation,
                 boxes: this.props.boxes,
+                boxesLength: this.props.boxesLength,
                 update: this.props.updatePositionMarker,
                 newBinLocation:this.props.newBoxLocation,
                 addNew: this.props.addNewLocation,
