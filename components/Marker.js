@@ -12,7 +12,7 @@ class Marker extends Component {
             this.renderMarker(this.props.position);
             count = 0
         }
-        else if (!this.props.update && count ===0) {
+        else if (!this.props.update && count ===0 || (this.props.boxes !== prevProps.boxes)) {
             position = prevProps.position;
             count = 1;
             this.renderMarker(position);

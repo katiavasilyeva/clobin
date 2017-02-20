@@ -2,21 +2,31 @@ import React, {Component} from 'react';
 
 class InfoPanel extends Component {
     render() {
-        if (this.props.confirmedNewLocation && this.props.addNewLocation) {
-            return (
+        if (this.props.confirmedNewLocation && this.props.addNewLocation && !this.props.hideInfoPanel &&
+        this.props.selectedBoxLength === 0) {
+            if(this.props.newLocationSubmitted && !this.props.hideInfoPanel){
+                return(
+                    <div style ={{background:'grey',height:75, color:'white'}}>
+                        Location successfully submitted!
+                        <button onClick={this.props.onInfoPanelClose}>
+                            X
+                        </button>
+                    </div>
+                )} else{
+                return (
                 <div
                 style ={{background:'grey',height:75}}>
                     <div>confirmed location address goes here</div>
-                    <button>
+                    <button onClick={()=>this.props.onSubmitNewBoxLocation()}>
                         SUBMIT
                     </button>
                     <button
                         onClick={()=>this.props.onCancelAddNewLocation()}>
                         CANCEL
                     </button>
-                </div>)
+                </div>)}
         }
-        else if (this.props.selectedBoxLength !== 0  && !this.props.confirmedNewLocation && !this.props.hideInfoPanel){
+        else if (this.props.selectedBoxLength !== 0 && !this.props.hideInfoPanel){
             const address = this.props.selectedBox.content[0];
             const operator = this.props.selectedBox.content[1];
             return (
@@ -31,7 +41,6 @@ class InfoPanel extends Component {
                         onClick={this.props.onInfoPanelClose}>
                         X
                     </button>
-
                 </div>
             )
         }

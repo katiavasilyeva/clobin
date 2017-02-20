@@ -6,24 +6,27 @@ import Boxes from './Boxes'
 import InfoPanel from './InfoPanel'
 import NewLocationMarker from './NewLocationMarker'
 import ConfirmNewLocation from './ConfirmNewLocation'
-let count = 0;
+import firebase from 'firebase';
+
 export class MapContainer extends React.Component {
     constructor(){
         super();
         this.state = {
             currentLocation:{
-                lat: 37.759703,
-                lng: -122.428093
+                lat: 43.6532,
+                lng: 79.3832
             },
             zoom:15,
+            boxes:[],
             selectedBox:{},
             selectedBoxLength:0,
             hideInfoPanel:true,
             updatePositionMarker:true,
             addNewLocation:false,
             newBoxLocation:{},
+            newBoxLocationLength:0,
             confirmNewLocation:false,
-            userAddedBoxes:[]
+            newLocationSubmitted:false
         };
         this.onSearchedAddress = this.onSearchedAddress.bind(this);
         this.onBoxSelect = this.onBoxSelect.bind(this);
@@ -32,6 +35,7 @@ export class MapContainer extends React.Component {
         this.getNewBoxLocation = this.getNewBoxLocation.bind(this);
         this.onConfirmNewLocation = this.onConfirmNewLocation.bind(this);
         this.onCancelAddNewLocation = this.onCancelAddNewLocation.bind(this);
+        this.onSubmitNewBoxLocation = this.onSubmitNewBoxLocation.bind(this);
     }
     componentDidMount() {
         if (navigator && navigator.geolocation) {
@@ -45,19 +49,34 @@ export class MapContainer extends React.Component {
                 })
             })
         }
+        const firebaseRef = firebase.database().ref('boxes');
+        const boxes = [];
+        firebaseRef.on('child_added',(snapshot)=>{
+            const newLocation = {
+                position:snapshot.val().position,
+                content:[snapshot.val().fullAddress,snapshot.val().operatingName],
+                icon:'http://maps.google.com/mapfiles/ms/icons/purple-dot.png'
+            };
+            boxes.push(newLocation);
+            if(boxes.length >= 580){
+                this.setState({boxes: boxes});
+            }
+        })
     }
     render() {
         return (
             <div>
                 <GoogleMap google={this.props.google}
                            zoom = {this.state.zoom}
+                           boxes = {this.state.boxes}
                            currentLocation={ this.state.currentLocation }
                            onSearchedAddress={this.onSearchedAddress}
                            updatePositionMarker = {this.state.updatePositionMarker}
                            addNewLocation = {this.state.addNewLocation}
                            getNewBoxLocation = {(newLocation)=>this.getNewBoxLocation(newLocation)}
                            newBoxLocation = {this.state.newBoxLocation}
-                           confirmedNewLocation = {this.state.confirmNewLocation}>
+                           confirmedNewLocation = {this.state.confirmNewLocation}
+                           newLocationSubmitted = {this.state.newLocationSubmitted}>
                     <Marker />
                     <NewLocationMarker/>
                     <Boxes
@@ -71,6 +90,8 @@ export class MapContainer extends React.Component {
                 <ConfirmNewLocation
                     addNewLocation = {this.state.addNewLocation}
                     onConfirmNewLocation = {()=>this.onConfirmNewLocation()}
+                    newBoxLocationLength = {this.state.newBoxLocationLength}
+                    newLocationSubmitted = {this.state.newLocationSubmitted}
                 />
                 <InfoPanel
                     hideInfoPanel = {this.state.hideInfoPanel}
@@ -80,6 +101,8 @@ export class MapContainer extends React.Component {
                     confirmedNewLocation = {this.state.confirmNewLocation}
                     addNewLocation = {this.state.addNewLocation}
                     onCancelAddNewLocation = {()=>this.onCancelAddNewLocation()}
+                    onSubmitNewBoxLocation = {()=>this.onSubmitNewBoxLocation()}
+                    newLocationSubmitted = {this.state.newLocationSubmitted}
                 />
             </div>
         )
@@ -109,27 +132,48 @@ export class MapContainer extends React.Component {
         });
     }
     onInfoPanelClose(){
-        this.setState({hideInfoPanel:true})
+        this.setState({hideInfoPanel:true, updatePositionMarker:false})
     }
     onAddNewLocation(){
-        if(count ===0 || (count%2) ===0){
-            count += 1;
-            console.log('even');
-            this.setState({addNewLocation:true,updatePositionMarker:false,hideInfoPanel:true});
-        }else if ((count%2)!==0){
-            count += 1;
-            console.log('odd');
-            this.setState({addNewLocation:false,updatePositionMarker:false,hideInfoPanel:false});
+        if(!this.state.submitNewLocationButtonClicked){
+            this.setState({addNewLocation:true,
+                updatePositionMarker:false,
+                hideInfoPanel:true,
+                submitNewLocationButtonClicked:true,
+                selectedBoxLength:0
+            });
+        }else {
+            this.setState({addNewLocation:false,
+                updatePositionMarker:false,
+                hideInfoPanel:true,
+                submitNewLocationButtonClicked:false,
+                selectedBoxLength:0
+            });
         }
     }
+
     getNewBoxLocation(newLocation){
-        this.setState({newBoxLocation:newLocation,updatePositionMarker:false});
+        const newBoxLocationLength = newLocation.length;
+        this.setState({newBoxLocation:newLocation,
+            updatePositionMarker:false,
+            newBoxLocationLength:newBoxLocationLength,
+
+        });
     }
     onConfirmNewLocation(){
         this.setState({updatePositionMarker:false,confirmNewLocation:true,hideInfoPanel:false});
     }
     onCancelAddNewLocation(){
-        this.setState({hideInfoPanel:true,confirmNewLocation:false,addNewLocation:false})
+        this.setState({hideInfoPanel:true,confirmNewLocation:false,addNewLocation:false});
+    }
+    onSubmitNewBoxLocation(){
+        console.log('works');
+        this.setState({newLocationSubmitted:true,
+            addNewLocation:true,
+            selectedBoxLength:0,
+            hideInfoPanel:false,
+            confirmedNewLocation:true
+        });
     }
 }
 export default GoogleApiWrapper({

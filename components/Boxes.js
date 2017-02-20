@@ -1,35 +1,11 @@
 import React, {Component} from 'react';
-import firebase from 'firebase';
 const evtNames = [ 'click','mouseover', 'dragend'];
-
+let locations =[];
 class Boxes extends Component{
-    constructor(){
-        super();
-        this.state={
-            boxes:[],
-        }
-    };
-    componentDidMount(){
-        const firebaseRef = firebase.database().ref('boxes');
-        const boxes = [];
-        firebaseRef.on('child_added',(snapshot)=>{
-            const newLocation = {
-                position:snapshot.val().position,
-                content:[snapshot.val().fullAddress,snapshot.val().operatingName],
-                icon:'http://maps.google.com/mapfiles/ms/icons/purple-dot.png'
-            };
-            boxes.push(newLocation);
-            if(boxes.length >= 580){
-                this.setState({boxes: boxes});
-
-            }
-            // render markers when there is something to render
-            if(this.state.boxes.length > 0){
-                this.renderMarker();
-            }
-        })
-    }
-
+    componentDidUpdate(prevProps){
+        if(this.props.map !== prevProps.map){
+            this.renderMarker();
+        }};
     camelize(word) {
         const str = JSON.stringify(word);
         let eventName = '';
@@ -42,10 +18,11 @@ class Boxes extends Component{
         return event;
     }
     renderMarker() {
+        locations = this.props.boxes;
         let {
             map, google
         } = this.props;
-        const boxMarkers = this.state.boxes.map((box,i) => {
+        const boxMarkers = this.props.boxes.map((box,i) => {
             const newMarker = {
                 content: box.content,
                 pos: box.position,
@@ -69,8 +46,8 @@ class Boxes extends Component{
         return () => {
             const evtName = `on${this.camelize(evt)}`;
             if (this.props[evtName]) {
-                this.props[evtName](this.state.boxes[i]);
-                const boxClicked = this.state.boxes[i];
+                this.props[evtName](this.props.boxes[i]);
+                const boxClicked = this.props.boxes[i];
                 this.props.onBoxSelect(boxClicked);
             }
         }

@@ -14,10 +14,13 @@ class GoogleMap extends React.Component {
                 google: this.props.google,
                 zoom:this.props.zoom,
                 position: this.props.currentLocation,
+                boxes: this.props.boxes,
                 update: this.props.updatePositionMarker,
                 newBinLocation:this.props.newBoxLocation,
                 addNew: this.props.addNewLocation,
-                confirmed: this.props.confirmedNewLocation
+                confirmed: this.props.confirmedNewLocation,
+                newLocationSubmitted: this.props.newLocationSubmitted,
+                getNewBoxLocation: this.props.getNewBoxLocation
             });
         })
     }
