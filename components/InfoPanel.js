@@ -16,6 +16,19 @@ class InfoPanel extends Component {
                 <div
                 style ={{background:'grey',height:75}}>
                     <div>confirmed location address goes here</div>
+                    <form>
+                        <div>
+                            <input
+                                type="text"
+                                placeholder="Drop Box Name or Operator"/>
+                        </div>
+                        <div>
+                            <input
+                                type="text"
+                                placeholder="Additional Comments"/>
+                        </div>
+
+                    </form>
                     <button onClick={()=>this.props.onSubmitNewBoxLocation()}>
                         SUBMIT
                     </button>
