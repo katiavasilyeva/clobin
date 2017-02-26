@@ -8,7 +8,6 @@ class ConfirmNewLocation extends Component{
                 Confirm Box Location
             </button></div>
                 )
-
         }
         else{
             return null;

@@ -41,11 +41,13 @@ class InfoPanel extends Component {
         else if (this.props.selectedBoxLength !== 0 && !this.props.hideInfoPanel && !this.props.addNewLocation){
             const address = this.props.selectedBox.content[0];
             const operator = this.props.selectedBox.content[1];
+            const source = this.props.selectedBox.content[2];
             return (
                 <div
                     style={{background:'grey'}}>
                     <div>Address: {address}</div>
-                    <div>Operator: {operator}</div>
+                    <div>Operating Name: {operator}</div>
+                    <div>Source: {source}</div>
                     <button >
                         Navigate
                     </button>

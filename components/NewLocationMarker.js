@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
 const evtNames = ['dragend'];
 let latestPosition = {};
+let count = 0;
 class NewLocationMarker extends Component{
-    constructor(){
-        super();
-        this.state= {markerConfirmedPosition:{}};
-    }
     camelize(word) {
         const str = JSON.stringify(word);
         let eventName = '';
@@ -24,14 +21,21 @@ class NewLocationMarker extends Component{
         if (this.marker && !this.props.addNew &&
             this.props.addNew !== nextProps.addNew && this.props.newLocationSubmitted) {
             this.marker.setMap(null);
+            count = 0;
         }
         if (this.props.confirmed && !this.props.newLocationSubmitted){
-            this.getLatestPosition();
-            this.renderNewBin(latestPosition)
+            if(count===0){
+                this.getLatestPosition();
+                count =1;
+                this.renderNewBin(latestPosition);
+            }else{
+                this.renderNewBin(latestPosition);
+            }
         }
         if (this.props.map !== nextProps.map ||
-            this.props.newBinLocation !== prevProps.newBinLocation
-            && this.props.addNew && !this.props.confirmed && !this.props.newLocationSubmitted
+            this.props.newBinLocation !== nextProps.newBinLocation
+            && this.props.addNew && !this.props.newLocationSubmitted
+            && !this.props.confirmed
         ) {
             this.renderNewBin(this.props.newBinLocation)
         }
@@ -45,7 +49,7 @@ class NewLocationMarker extends Component{
         const pref = {
             map: map,
             position: position,
-            draggable:true,
+            draggable:this.props.newBoxLocationDraggable,
             icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
         };
         this.marker = new google.maps.Marker(pref);
@@ -62,13 +66,11 @@ class NewLocationMarker extends Component{
         }
     }
     getLatestPosition(){
-        if(this.marker){
             const lat = this.marker.getPosition().lat();
             const lng = this.marker.getPosition().lng();
-            const currentMarkerLocation = {lat:lat,lng:lng};
+            const currentMarkerLocation = {lat: lat, lng: lng};
             latestPosition = currentMarkerLocation;
-            this.props.getNewBoxLocation(latestPosition)
-        }
+            this.props.getNewBoxLocation(latestPosition);
     }
     render(){
         return null;

@@ -19,6 +19,7 @@ class GoogleMap extends React.Component {
                 update: this.props.updatePositionMarker,
                 newBinLocation:this.props.newBoxLocation,
                 addNew: this.props.addNewLocation,
+                newBoxLocationDraggable:this.props.newBoxLocationDraggable,
                 confirmed: this.props.confirmedNewLocation,
                 newLocationSubmitted: this.props.newLocationSubmitted,
                 getNewBoxLocation: this.props.getNewBoxLocation
