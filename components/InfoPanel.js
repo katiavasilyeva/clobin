@@ -16,18 +16,12 @@ class InfoPanel extends Component {
                 <div
                 style ={{background:'grey',height:75}}>
                     <div>{this.props.newBoxAddress}</div>
-                    <form>
                         <div>
                             <input
                                 type="text"
-                                placeholder="Drop Box Name or Operator"/>
+                                placeholder="Drop Box Name or Operator"
+                                onChange={(evt)=>this.props.onUpdateNewBoxName(evt)}/>
                         </div>
-                        <div>
-                            <input
-                                type="text"
-                                placeholder="Additional Comments"/>
-                        </div>
-                    </form>
                     <button onClick={()=>this.props.onSubmitNewBoxLocation()}>
                         SUBMIT
                     </button>
@@ -45,7 +39,7 @@ class InfoPanel extends Component {
                 <div
                     style={{background:'grey'}}>
                     <div>Address: {address}</div>
-                    <div>Operating Name: {operator}</div>
+                    <div>Name: {operator}</div>
                     <div>Source: {source}</div>
                     <button >
                         Navigate

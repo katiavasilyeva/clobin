@@ -27,6 +27,8 @@ export class MapContainer extends React.Component {
             newBoxLocationDraggable:true,
             newBoxLocation:{},
             newBoxLocationLength:0,
+            newBoxLocationName:'',
+            newBoxLocationUserAdded:'',
             newBoxAddress:'',
             confirmNewLocation:false,
             newLocationSubmitted:false
@@ -40,6 +42,7 @@ export class MapContainer extends React.Component {
         this.onCancelAddNewLocation = this.onCancelAddNewLocation.bind(this);
         this.onSubmitNewBoxLocation = this.onSubmitNewBoxLocation.bind(this);
         this.onGetNewBoxAddress = this.onGetNewBoxAddress.bind(this);
+        this.onUpdateNewBoxName = this.onUpdateNewBoxName.bind(this);
     }
     componentDidMount() {
         if (navigator && navigator.geolocation) {
@@ -121,6 +124,7 @@ export class MapContainer extends React.Component {
                     onSubmitNewBoxLocation = {()=>this.onSubmitNewBoxLocation()}
                     newLocationSubmitted = {this.state.newLocationSubmitted}
                     newBoxAddress ={this.state.newBoxAddress}
+                    onUpdateNewBoxName = {(evt)=>this.onUpdateNewBoxName(evt)}
                 />
 
             </div>
@@ -193,6 +197,9 @@ export class MapContainer extends React.Component {
             newBoxLocationDraggable:false
         });
     }
+    onUpdateNewBoxName(evt){
+        this.setState({newBoxLocationName:evt.target.value})
+    }
     onCancelAddNewLocation(){
         this.setState({hideInfoPanel:true,
             confirmNewLocation:false,
@@ -204,7 +211,7 @@ export class MapContainer extends React.Component {
     }
     onSubmitNewBoxLocation(){
         const newLocation={
-            content:['123 Address ave', 'operator'],
+            content:[this.state.newBoxAddress, this.state.newBoxLocationName, 'User Added'],
             icon:'http://maps.google.com/mapfiles/ms/icons/purple-dot.png',
             position:this.state.newBoxLocation,
         };
