@@ -11,7 +11,6 @@ class Boxes extends Component{
             return false;
         }
     };
-
     camelize(word) {
         const str = JSON.stringify(word);
         let eventName = '';

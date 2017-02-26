@@ -22,7 +22,8 @@ class GoogleMap extends React.Component {
                 newBoxLocationDraggable:this.props.newBoxLocationDraggable,
                 confirmed: this.props.confirmedNewLocation,
                 newLocationSubmitted: this.props.newLocationSubmitted,
-                getNewBoxLocation: this.props.getNewBoxLocation
+                getNewBoxLocation: this.props.getNewBoxLocation,
+                onGetNewBoxAddress: this.props.onGetNewBoxAddress
             });
         })
     }

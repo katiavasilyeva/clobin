@@ -27,6 +27,7 @@ export class MapContainer extends React.Component {
             newBoxLocationDraggable:true,
             newBoxLocation:{},
             newBoxLocationLength:0,
+            newBoxAddress:'',
             confirmNewLocation:false,
             newLocationSubmitted:false
         };
@@ -38,7 +39,7 @@ export class MapContainer extends React.Component {
         this.onConfirmNewLocation = this.onConfirmNewLocation.bind(this);
         this.onCancelAddNewLocation = this.onCancelAddNewLocation.bind(this);
         this.onSubmitNewBoxLocation = this.onSubmitNewBoxLocation.bind(this);
-
+        this.onGetNewBoxAddress = this.onGetNewBoxAddress.bind(this);
     }
     componentDidMount() {
         if (navigator && navigator.geolocation) {
@@ -88,6 +89,7 @@ export class MapContainer extends React.Component {
                            getNewBoxLocation = {(newLocation)=>this.getNewBoxLocation(newLocation)}
                            newBoxLocation = {this.state.newBoxLocation}
                            newBoxLocationLength = {this.state.newBoxLocationLength}
+                           onGetNewBoxAddress = {(address)=>this.onGetNewBoxAddress(address)}
                            confirmedNewLocation = {this.state.confirmNewLocation}
                            newLocationSubmitted = {this.state.newLocationSubmitted}>
                     <Marker />
@@ -103,9 +105,11 @@ export class MapContainer extends React.Component {
                 <ConfirmNewLocation
                     addNewLocation = {this.state.addNewLocation}
                     onConfirmNewLocation = {this.onConfirmNewLocation}
+                    confirm = {this.state.confirmNewLocation}
                     newBoxLocationLength = {this.state.newBoxLocationLength}
                     newLocationSubmitted = {this.state.newLocationSubmitted}
-                />
+                    onCancelAddNewLocation={this.onCancelAddNewLocation}
+                    />
                 <InfoPanel
                     hideInfoPanel = {this.state.hideInfoPanel}
                     selectedBox = {this.state.selectedBox}
@@ -116,6 +120,7 @@ export class MapContainer extends React.Component {
                     onCancelAddNewLocation = {()=>this.onCancelAddNewLocation()}
                     onSubmitNewBoxLocation = {()=>this.onSubmitNewBoxLocation()}
                     newLocationSubmitted = {this.state.newLocationSubmitted}
+                    newBoxAddress ={this.state.newBoxAddress}
                 />
 
             </div>
@@ -170,13 +175,16 @@ export class MapContainer extends React.Component {
             });
         }
     }
-
     getNewBoxLocation(newLocation){
         const newBoxLocationLength = newLocation.length;
         this.setState({newBoxLocation:newLocation,
             updatePositionMarker:false,
             newBoxLocationLength:newBoxLocationLength
         });
+
+    }
+    onGetNewBoxAddress(address){
+        this.setState({newBoxAddress: address});
     }
     onConfirmNewLocation(){
         this.setState({updatePositionMarker:false,
@@ -190,6 +198,7 @@ export class MapContainer extends React.Component {
             confirmNewLocation:false,
             addNewLocation:false,
             submitNewLocationButtonClicked:false,
+            newLocationSubmitted:false,
             newBoxLocationDraggable:true
         });
     }

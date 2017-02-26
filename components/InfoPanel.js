@@ -15,7 +15,7 @@ class InfoPanel extends Component {
                 return (
                 <div
                 style ={{background:'grey',height:75}}>
-                    <div>confirmed location address goes here</div>
+                    <div>{this.props.newBoxAddress}</div>
                     <form>
                         <div>
                             <input
@@ -27,7 +27,6 @@ class InfoPanel extends Component {
                                 type="text"
                                 placeholder="Additional Comments"/>
                         </div>
-
                     </form>
                     <button onClick={()=>this.props.onSubmitNewBoxLocation()}>
                         SUBMIT

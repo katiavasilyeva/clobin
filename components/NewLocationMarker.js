@@ -14,7 +14,7 @@ class NewLocationMarker extends Component{
         const event = eventName.charAt(0).toUpperCase() + eventName.slice(1);
         return event;
     }
-    componentDidUpdate(nextProps,prevProps) {
+    componentDidUpdate(nextProps) {
         if (this.marker) {
             this.marker.setMap(null);
         }
@@ -37,6 +37,7 @@ class NewLocationMarker extends Component{
             && this.props.addNew && !this.props.newLocationSubmitted
             && !this.props.confirmed
         ) {
+            count = 0;
             this.renderNewBin(this.props.newBinLocation)
         }
     }
@@ -57,6 +58,23 @@ class NewLocationMarker extends Component{
             this.marker.addListener(e, this.handleEvent(e));
         });
     }
+    reverseGeocode(location){
+        let google = this.props.google;
+        let getNewBoxAddress = this.props.onGetNewBoxAddress;
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({'location': location}, function(results, status) {
+            if (status === 'OK') {
+                if (results) {
+                    const address = (results[0].formatted_address);
+                    getNewBoxAddress(address);
+                } else {
+                    window.alert('No results found');
+                }
+            } else {
+                window.alert('Geocoder failed due to: ' + status);
+            }});
+    };
+
     handleEvent(evt) {
         return (e) => {
             const evtName = `on${this.camelize(evt)}`;
@@ -66,11 +84,11 @@ class NewLocationMarker extends Component{
         }
     }
     getLatestPosition(){
-            const lat = this.marker.getPosition().lat();
-            const lng = this.marker.getPosition().lng();
-            const currentMarkerLocation = {lat: lat, lng: lng};
-            latestPosition = currentMarkerLocation;
-            this.props.getNewBoxLocation(latestPosition);
+        const lat = this.marker.getPosition().lat();
+        const lng = this.marker.getPosition().lng();
+        latestPosition = {lat: lat, lng: lng};
+        this.props.getNewBoxLocation(latestPosition);
+        this.reverseGeocode(latestPosition);
     }
     render(){
         return null;
